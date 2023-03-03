@@ -4,11 +4,10 @@ import com.ecore.roles.service.TeamsService;
 import com.ecore.roles.web.TeamsApi;
 import com.ecore.roles.web.dto.TeamDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
@@ -21,27 +20,28 @@ import static com.ecore.roles.web.dto.TeamDto.fromModel;
 @RequestMapping(value = "/v1/teams")
 public class TeamsRestController implements TeamsApi {
 
+    @Autowired
     private final TeamsService teamsService;
 
     @Override
-    @PostMapping(
+    @GetMapping(
             produces = {"application/json"})
     public ResponseEntity<List<TeamDto>> getTeams() {
         return ResponseEntity
-                .status(200)
+                .status(HttpStatus.OK)
                 .body(teamsService.getTeams().stream()
                         .map(TeamDto::fromModel)
                         .collect(Collectors.toList()));
     }
 
     @Override
-    @PostMapping(
+    @GetMapping(
             path = "/{teamId}",
             produces = {"application/json"})
     public ResponseEntity<TeamDto> getTeam(
             @PathVariable UUID teamId) {
         return ResponseEntity
-                .status(200)
+                .status(HttpStatus.OK)
                 .body(fromModel(teamsService.getTeam(teamId)));
     }
 

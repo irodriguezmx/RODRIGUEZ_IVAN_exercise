@@ -17,6 +17,7 @@ import static com.ecore.roles.utils.MockUtils.mockGetTeamById;
 import static com.ecore.roles.utils.RestAssuredHelper.createMembership;
 import static com.ecore.roles.utils.RestAssuredHelper.getMemberships;
 import static com.ecore.roles.utils.TestData.*;
+import static com.ecore.roles.utils.TestData.ORDINARY_CORAL_LYNX_TEAM;
 import static java.lang.String.format;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -116,7 +117,7 @@ public class MembershipsApiTests {
     @Test
     void shouldFailToCreateRoleMembershipWhenTeamDoesNotExist() {
         Membership expectedMembership = DEFAULT_MEMBERSHIP();
-        mockGetTeamById(mockServer, expectedMembership.getTeamId(), null);
+        mockGetTeamById(mockServer, null, null);
 
         createMembership(expectedMembership)
                 .validate(404, format("Team %s not found", expectedMembership.getTeamId()));

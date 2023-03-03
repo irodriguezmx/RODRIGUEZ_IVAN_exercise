@@ -95,7 +95,7 @@ public class TestData {
         return Membership.builder()
                 .id(DEFAULT_MEMBERSHIP_UUID)
                 .role(DEVELOPER_ROLE())
-                .userId(UUID_4)
+                .userId(UUID_3)
                 .teamId(ORDINARY_CORAL_LYNX_TEAM_UUID)
                 .build();
     }
