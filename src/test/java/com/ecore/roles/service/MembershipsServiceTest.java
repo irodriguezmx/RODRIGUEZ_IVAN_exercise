@@ -1,7 +1,7 @@
 package com.ecore.roles.service;
 
 import com.ecore.roles.exception.InvalidArgumentException;
-import com.ecore.roles.exception.ResourceExistsException;
+import com.ecore.roles.exception.ResourceNotFoundException;
 import com.ecore.roles.model.Membership;
 import com.ecore.roles.repository.MembershipRepository;
 import com.ecore.roles.repository.RoleRepository;
@@ -14,8 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
-import static com.ecore.roles.utils.TestData.DEFAULT_MEMBERSHIP;
-import static com.ecore.roles.utils.TestData.DEVELOPER_ROLE;
+import static com.ecore.roles.utils.TestData.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -41,6 +40,8 @@ class MembershipsServiceTest {
     @Test
     public void shouldCreateMembership() {
         Membership expectedMembership = DEFAULT_MEMBERSHIP();
+        when(teamsService.getTeam(expectedMembership.getTeamId()))
+                .thenReturn(ORDINARY_CORAL_LYNX_TEAM());
         when(roleRepository.findById(expectedMembership.getRole().getId()))
                 .thenReturn(Optional.ofNullable(DEVELOPER_ROLE()));
         when(membershipRepository.findByUserIdAndTeamId(expectedMembership.getUserId(),
@@ -66,14 +67,9 @@ class MembershipsServiceTest {
     @Test
     public void shouldFailToCreateMembershipWhenItExists() {
         Membership expectedMembership = DEFAULT_MEMBERSHIP();
-        when(membershipRepository.findByUserIdAndTeamId(expectedMembership.getUserId(),
-                expectedMembership.getTeamId()))
-                        .thenReturn(Optional.of(expectedMembership));
 
-        ResourceExistsException exception = assertThrows(ResourceExistsException.class,
+        assertThrows(ResourceNotFoundException.class,
                 () -> membershipsService.assignRoleToMembership(expectedMembership));
-
-        assertEquals("Membership already exists", exception.getMessage());
         verify(roleRepository, times(0)).getById(any());
         verify(usersService, times(0)).getUser(any());
         verify(teamsService, times(0)).getTeam(any());
