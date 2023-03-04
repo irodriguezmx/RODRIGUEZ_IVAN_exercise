@@ -56,7 +56,7 @@ public class RolesServiceImpl implements RolesService {
     @Override
     public List<Role> getRolesByUserTeam(UUID userId, UUID teamId) {
         if (userId == null || teamId == null) {
-            throw new InvalidArgumentException(Role.class);
+            throw new InvalidArgumentException(UUID.class);
         }
         return membershipRepository.findByUserIdAndTeamId(userId, teamId).stream()
                 .map(Membership::getRole).collect(Collectors.toList());

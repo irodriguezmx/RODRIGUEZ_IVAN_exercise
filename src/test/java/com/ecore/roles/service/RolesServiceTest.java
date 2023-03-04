@@ -1,5 +1,6 @@
 package com.ecore.roles.service;
 
+import com.ecore.roles.exception.InvalidArgumentException;
 import com.ecore.roles.exception.ResourceNotFoundException;
 import com.ecore.roles.model.Role;
 import com.ecore.roles.repository.MembershipRepository;
@@ -13,8 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
-import static com.ecore.roles.utils.TestData.DEVELOPER_ROLE;
-import static com.ecore.roles.utils.TestData.UUID_1;
+import static com.ecore.roles.utils.TestData.*;
 import static java.lang.String.format;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -70,5 +70,13 @@ class RolesServiceTest {
                 () -> rolesService.getRole(UUID_1));
 
         assertEquals(format("Role %s not found", UUID_1), exception.getMessage());
+    }
+
+    @Test
+    public void shouldFailToGetRoleByUserTeamWhenTeamDoesNotExist() {
+        InvalidArgumentException exception = assertThrows(InvalidArgumentException.class,
+                () -> rolesService.getRolesByUserTeam(UUID_1, null));
+
+        assertEquals(format("Invalid 'UUID' object"), exception.getMessage());
     }
 }

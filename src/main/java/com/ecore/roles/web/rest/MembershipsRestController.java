@@ -1,5 +1,7 @@
 package com.ecore.roles.web.rest;
 
+import com.ecore.roles.exception.ResourceExistsException;
+import com.ecore.roles.exception.ResourceNotFoundException;
 import com.ecore.roles.model.Membership;
 import com.ecore.roles.service.MembershipsService;
 import com.ecore.roles.web.MembershipsApi;
@@ -31,10 +33,16 @@ public class MembershipsRestController implements MembershipsApi {
             produces = {"application/json"})
     public ResponseEntity<MembershipDto> assignRoleToMembership(
             @NotNull @Valid @RequestBody MembershipDto membershipDto) {
-        Membership membership = membershipsService.assignRoleToMembership(membershipDto.toModel());
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(fromModel(membership));
+        try {
+            Membership membership = membershipsService.assignRoleToMembership(membershipDto.toModel());
+            return ResponseEntity
+                    .status(HttpStatus.CREATED)
+                    .body(fromModel(membership));
+        } catch (ResourceNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (ResourceExistsException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @Override

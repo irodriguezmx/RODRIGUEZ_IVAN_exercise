@@ -59,15 +59,15 @@ public class RolesRestController implements RolesApi {
 
     @Override
     @GetMapping(
-            path = "/user/{userId}/team/{teamId}",
+            path = "/search",
             produces = {"application/json"})
     public ResponseEntity<List<RoleDto>> getRolesByUserTeam(
-            @PathVariable("userId") @NotBlank UUID userId,
-            @PathVariable("teamId") @NotBlank UUID teamId) {
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(rolesService.getRolesByUserTeam(userId, teamId).stream()
-                        .map(RoleDto::fromModel)
-                        .collect(Collectors.toList()));
+            @RequestParam("userId") @NotBlank UUID userId,
+            @RequestParam("teamId") @NotBlank UUID teamId) {
+        List<RoleDto> roles = rolesService.getRolesByUserTeam(userId, teamId).stream().map(RoleDto::fromModel)
+                .collect(Collectors.toList());
+        return roles.size() > 0
+                ? ResponseEntity.status(HttpStatus.OK).body(roles)
+                : ResponseEntity.status(HttpStatus.NOT_FOUND).body(roles);
     }
 }

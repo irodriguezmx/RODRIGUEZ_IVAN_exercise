@@ -94,7 +94,7 @@ public class TestData {
     public static Membership INVALID_MEMBERSHIP() {
         return Membership.builder()
                 .id(DEFAULT_MEMBERSHIP_UUID)
-                .role(DEVELOPER_ROLE())
+                .role(null)
                 .userId(UUID_3)
                 .teamId(ORDINARY_CORAL_LYNX_TEAM_UUID)
                 .build();
